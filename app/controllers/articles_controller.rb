@@ -7,6 +7,18 @@ class ArticlesController < ApplicationController
   end
 
   def show
+    session_views = session[:page_views]
+    if (session_views) then
+      if (session_views >= 3) then
+        render json: {error: "Please sign up to view more."}, status: :unauthorized
+      end
+      session[:page_views] += 1
+    else 
+      session[:page_views] ||= 0
+    end
+
+    # p session_views
+
     article = Article.find(params[:id])
     render json: article
   end
